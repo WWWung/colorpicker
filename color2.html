@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			div {
+				width: 200px;
+				height: 200px;
+			}
+			#p1 {
+				position: relative;
+				/*background: #FF0000;*/
+				margin-bottom: 20px;
+				z-index: 1;;
+			}
+			#p2, #p3 {
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+			#p2 {
+				background: linear-gradient(180deg,transparent 0,#000);
+				z-index: 2;
+			}
+			#p3 {
+				background: linear-gradient(90deg,#fff 0,transparent);
+				z-index: 1;
+			}
+			#p5 {
+				width: 35px;
+				height: 200px;
+				background: linear-gradient(180deg,red 0,#f90 10%,#cdff00 20%,#35ff00 30%,#0f6 40%,#00fffd 50%,#06f 60%,#3200ff 70%,#cd00ff 80%,#f09 90%,red);
+			}
+			#p6 {
+				width: 100px;
+				height: 200px;
+			}
+			#p4 {
+				width: 35px;
+				margin-right: 10px;
+			}
+			#p4 , #p5 {
+				float: left;
+			}
+ 		</style>
+	</head>
+	<body>
+		<div id="p1">
+			<div id="p2"></div>
+			<div id="p3"></div>
+		</div>
+		<div id="p6">
+			<div id="p5"></div>
+		</div>
+		<div id="p7"></div>
+		<script>
+			var rgb = null;
+			var hsv = {
+				h: 0,
+				s: 0,
+				v: 0
+			}
+			p5.addEventListener('mousedown', hClick)
+			window.addEventListener('mouseup', function () {
+				p5.removeEventListener('mousemove', hClick)
+			})
+			
+			p1.addEventListener('mousedown', colorPicker)
+			window.addEventListener('mouseup', function () {
+				p1.removeEventListener('mousemove', colorPicker)
+			})
+			function hClick(e) {
+				var y = this.offsetTop
+				var h = (e.pageY - y) / 200;
+				var s = 1;
+				var v = 1;
+				hsv.h = h
+				rgb = hsvToRgb(h, s, v);
+				var color = `rgb(${Math.round(rgb.r*255)},${Math.round(rgb.g*255)},${Math.round(rgb.b*255)})`
+				p1.style.backgroundColor = color;
+				p5.addEventListener('mousemove', hClick)
+			}
+			function colorPicker(e) {
+				var y = this.offsetTop
+				var x = this.offsetLeft
+				var s = (e.pageX - x) / 200;
+				var v = 1 - (e.pageY - y) / 200;
+				rgb = hsvToRgb(hsv.h, s, v);
+				var color = `rgb(${Math.round(rgb.r*255)},${Math.round(rgb.g*255)},${Math.round(rgb.b*255)})`
+				p7.style.backgroundColor = color
+				p1.addEventListener('mousemove', colorPicker)
+			}
+			
+			
+			
+			//转换公式参见 https://blog.csdn.net/wudaijun/article/details/9964091
+			function hsvToRgb(hue, saturation, value) {
+				var red;
+				var green;
+				var blue;
+				if(value == 0.0) {
+					red = 0;
+					green = 0;
+					blue = 0;
+				} else {
+					var i = Math.floor(hue * 6);
+					var f = (hue * 6) - i;
+					var p = value * (1 - saturation);
+					var q = value * (1 - (saturation * f));
+					var t = value * (1 - (saturation * (1 - f)));
+					switch(i) {
+						case 1:
+							red = q;
+							green = value;
+							blue = p;
+							break;
+						case 2:
+							red = p;
+							green = value;
+							blue = t;
+							break;
+						case 3:
+							red = p;
+							green = q;
+							blue = value;
+							break;
+						case 4:
+							red = t;
+							green = p;
+							blue = value;
+							break;
+						case 5:
+							red = value;
+							green = p;
+							blue = q;
+							break;
+						case 6: // fall through
+						case 0:
+							red = value;
+							green = t;
+							blue = p;
+							break;
+					}
+				}
+				return {
+					r: red,
+					g: green,
+					b: blue
+				};
+			}
+		</script>
+	</body>
+</html>
